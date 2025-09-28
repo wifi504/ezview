@@ -4,6 +4,7 @@
   "version": "1.0.0",
   "private": true,
   "description": "让前端变得 Easy 的组件/工具库",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/wifi504/ezview.git"
@@ -14,7 +15,7 @@
     "lint:fix": "eslint . --fix"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^5.1.0",
+    "@ezview/eslint-config": "workspace:*",
     "@ezview/gen-vue-routes": "workspace:*",
     "@types/node": "^24.0.14",
     "@vitejs/plugin-vue": "^6.0.1",

@@ -8,9 +8,9 @@ importers:
 
   .:
     devDependencies:
-      '@antfu/eslint-config':
-        specifier: ^5.1.0
-        version: 5.4.1(@vue/compiler-sfc@3.5.22)(eslint@9.36.0)(typescript@5.8.3)
+      '@ezview/eslint-config':
+        specifier: workspace:*
+        version: link:configs/eslint-config
       '@ezview/gen-vue-routes':
         specifier: workspace:*
         version: link:scripts/gen-vue-routes
@@ -35,6 +35,15 @@ importers:
       vue-tsc:
         specifier: ^3.0.7
         version: 3.0.8(typescript@5.8.3)
+
+  configs/eslint-config:
+    dependencies:
+      '@antfu/eslint-config':
+        specifier: ^5.1.0
+        version: 5.4.1(@vue/compiler-sfc@3.5.22)(eslint@9.36.0)(typescript@5.8.3)
+      eslint:
+        specifier: ^9
+        version: 9.36.0
 
   playground:
     dependencies:

@@ -30,7 +30,7 @@
 
 1. 在你的项目 `src/router` 目录下准备如下三个文件
 
-   - `index.ts` ：导出 `router`
+   - `index.js` ：导出 `router`
 
    - `routes.ts` ：配置 `router` 时传入的 `routes`
 
@@ -50,7 +50,7 @@
    export default [] as RouteRecordOption[]
    ```
 
-4. 配置 `index.ts` ，根据你的实际项目来，相当于把原来你写 `routes` 的地方移到了外面
+4. 配置 `index.js` ，根据你的实际项目来，相当于把原来你写 `routes` 的地方移到了外面
 
    ```typescript
    import { createRouter, createWebHistory } from 'vue-router'

@@ -161,8 +161,7 @@ function parseOptionsFile(optionsPath: string): FlatRouteOption[] {
   let rootArray: types.namedTypes.ArrayExpression | null = null
   if (exportNode.declaration.type === 'ArrayExpression') {
     rootArray = exportNode.declaration
-  }
-  else if (
+  } else if (
     exportNode.declaration.type === 'TSAsExpression'
     && exportNode.declaration.expression.type === 'ArrayExpression'
   ) {
@@ -374,8 +373,7 @@ function applyRouteOptionsToAST(
           const joined = [base, ...remainingSegments].filter(Boolean).join('/')
           ;(pathProp.value as types.namedTypes.StringLiteral).value = (hadLeading ? '/' : '') + joined
         }
-      }
-      else {
+      } else {
         const newPathValue = remainingSegments.join('/')
         parentNode.properties.unshift(
           types.builders.objectProperty(
@@ -460,8 +458,7 @@ export async function main() {
     console.log(` - 成功解析 ${routeOptions.length} 条配置`)
     applyRouteOptionsToAST(routeArrayAST, routeOptions)
     console.log(` - 合并完成`)
-  }
-  else {
+  } else {
     console.log(' - 未发现可合并的自定义配置，或 options.ts 文件为空，跳过此步骤')
   }
   // 5. 编译抽象语法树生成最终 routes
