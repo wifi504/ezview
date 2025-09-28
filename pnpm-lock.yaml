@@ -50,13 +50,12 @@ importers:
 
   scripts/gen-vue-routes:
     dependencies:
-      eslint:
-        specifier: ^9
-        version: 9.36.0
-    devDependencies:
       '@babel/parser':
         specifier: ^7.28.0
         version: 7.28.4
+      eslint:
+        specifier: ^9
+        version: 9.36.0
       fast-glob:
         specifier: ^3.3.3
         version: 3.3.3

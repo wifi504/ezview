@@ -11,11 +11,11 @@
 1. 运行如下命令之一即可
 
    ```bash
-   npm i @ezview/gen-vue-routes
+   npm i @ezview/gen-vue-routes --dev
    ```
 
    ```bash
-   pnpm i @ezview/gen-vue-routes
+   pnpm i @ezview/gen-vue-routes -D
    ```
 
 2. 然后在你需要使用此工具的项目 `package.json` 文件的 `scripts` 中添加
