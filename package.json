@@ -15,12 +15,13 @@
   },
   "devDependencies": {
     "@antfu/eslint-config": "^5.1.0",
+    "@ezview/gen-vue-routes": "workspace:*",
     "@types/node": "^24.0.14",
     "@vitejs/plugin-vue": "^6.0.1",
     "@vue/tsconfig": "^0.8.1",
+    "eslint": "^9.32.0",
     "typescript": "~5.8.3",
     "vite": "^7.1.7",
-    "vue-tsc": "^3.0.7",
-    "eslint": "^9.32.0"
+    "vue-tsc": "^3.0.7"
   }
 }

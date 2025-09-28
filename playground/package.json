@@ -8,7 +8,8 @@
     "build": "vue-tsc -b && vite build",
     "type-check": "vue-tsc -b",
     "build-only": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "gen-routes": "gen-vue-routes"
   },
   "dependencies": {
     "pinia": "^3.0.3",
