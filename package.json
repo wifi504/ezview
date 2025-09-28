@@ -1,0 +1,26 @@
+{
+  "name": "@ezview/workspace",
+  "type": "module",
+  "version": "1.0.0",
+  "private": true,
+  "description": "让前端变得 Easy 的组件/工具库",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wifi504/ezview.git"
+  },
+  "scripts": {
+    "dev": "pnpm --filter playground dev",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
+  },
+  "devDependencies": {
+    "@antfu/eslint-config": "^5.1.0",
+    "@types/node": "^24.0.14",
+    "@vitejs/plugin-vue": "^6.0.1",
+    "@vue/tsconfig": "^0.8.1",
+    "typescript": "~5.8.3",
+    "vite": "^7.1.7",
+    "vue-tsc": "^3.0.7",
+    "eslint": "^9.32.0"
+  }
+}
