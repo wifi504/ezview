@@ -1,0 +1,22 @@
+{
+  "name": "@ezview/request",
+  "version": "1.0.0",
+  "publishConfig": {
+    "access": "public"
+  },
+  "description": "二次封装的网络请求库，提供了数据层的服务",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch",
+    "publish:only": "pnpm publish --access public --no-git-checks --registry=https://registry.npmjs.org"
+  },
+  "dependencies": {
+    "axios": "^1.12.2"
+  },
+  "peerDependencies": {
+    "vue": "^3"
+  }
+}
