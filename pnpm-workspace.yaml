@@ -2,3 +2,4 @@ packages:
   - playground
   - scripts/*
   - configs/*
+  - utils/*

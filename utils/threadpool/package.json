@@ -1,0 +1,16 @@
+{
+  "name": "@ezview/threadpool",
+  "version": "1.0.0",
+  "publishConfig": {
+    "access": "public"
+  },
+  "description": "基于 Web Worker 实现的线程池，Vite 优雅可用",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch",
+    "publish:only": "pnpm publish --access public --no-git-checks --registry=https://registry.npmjs.org"
+  }
+}

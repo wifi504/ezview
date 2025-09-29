@@ -47,6 +47,9 @@ importers:
 
   playground:
     dependencies:
+      '@ezview/threadpool':
+        specifier: workspace:*
+        version: link:../utils/threadpool
       pinia:
         specifier: ^3.0.3
         version: 3.0.3(typescript@5.8.3)(vue@3.5.22(typescript@5.8.3))
@@ -74,6 +77,8 @@ importers:
       vue-router:
         specifier: ^4
         version: 4.5.1(vue@3.5.22(typescript@5.8.3))
+
+  utils/threadpool: {}
 
 packages:
 
