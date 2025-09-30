@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "ES2020",
     "module": "ESNext",
-    "lib": ["DOM"],
+    "lib": ["DOM", "ESNext"],
     "moduleResolution": "Bundler",
     "strict": true,
     "declaration": true,

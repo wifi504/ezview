@@ -13,7 +13,7 @@ export function stableStringify(obj: any): string {
 }
 
 // 合并配置
-export function mergeConfig<T>(defaults: T, config?: DeepPartial<T>): T {
+export function mergeConfig<T>(defaults: any, config?: DeepPartial<T>): T {
   const result = { ...defaults }
 
   if (config) {

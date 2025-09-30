@@ -1,4 +1,4 @@
-import type { AxiosRequestConfig } from 'axios'
+import type { AxiosRequestConfig, AxiosResponse } from 'axios'
 import type { Ref } from 'vue'
 
 export type Method = 'GET' | 'POST' | 'PUT' | 'DELETE'
@@ -17,11 +17,13 @@ export interface EzRequestConfig<D = any, T = ResultData> extends AxiosRequestCo
   // 缓存配置
   cache: {
     // 缓存键，通过这个key来判断请求唯一性，默认是URL + method + params + data 的序列化
-    key: string | ((config: EzRequestConfig) => string)
+    key: string | ((config: EzRequestConfig<D, T>) => string)
     // 有效期ms（默认0不缓存，-1永久有效）
     expire: number
     // 缓存级别（内存缓存刷新就丢弃/磁盘缓存）
     level: 'memory' | 'disk'
+    // 忽略可能存在的缓存，无论如何都会发起网络请求，默认false
+    ignore: boolean
   }
   // 待定的 Result 数据，在响应没有获取到时呈现的内容，默认 undefined
   pendingResult?: T
@@ -34,6 +36,13 @@ export interface EzResponse<T = ResultData> {
   resultRef: Ref<T | undefined>
   resultPromise: Promise<T>
   loading: Ref<boolean>
+}
+
+// 请求缓存
+export interface ResponseCacheHolder<T> {
+  response: EzResponse<T>
+  expire: number
+  attempt: number
 }
 
 // 深可选配置
