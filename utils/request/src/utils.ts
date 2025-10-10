@@ -14,7 +14,7 @@ export function stableStringify(obj: any): string {
 
 // 合并配置
 export function mergeConfig<T>(defaults: any, config?: DeepPartial<T>): T {
-  const result = { ...defaults }
+  const result = structuredClone(defaults)
 
   if (config) {
     for (const key in config) {

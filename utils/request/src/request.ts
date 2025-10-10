@@ -1,16 +1,16 @@
 import type { AxiosInstance, CreateAxiosDefaults } from 'axios'
-import type { Ref } from 'vue'
-import type { DeepPartial, EzRequestConfig, EzResponse, ResponseCacheHolder, ResultData } from './types'
+import type { DeepPartial, EzRequestConfig, EzResponse, ResponseCache, ResultData } from './types'
 import axiosLib from 'axios'
 import localforage from 'localforage'
-import { ref } from 'vue'
+import { RequestEvent, RequestState } from './state'
 import { mergeConfig, stableStringify } from './utils'
 
-const defaultRequestConfig: EzRequestConfig = {
+const defaultRequestConfig: EzRequestConfig<any, any> = {
   url: '',
   method: 'GET',
   retry: 0,
   retryDelay: () => 3 * 1000,
+  assert: resultData => !!resultData,
   cache: {
     key: ({ url, method, params, data }) => {
       const m = method.toUpperCase
@@ -24,9 +24,9 @@ const defaultRequestConfig: EzRequestConfig = {
   },
 }
 
-export class Request {
+export class EzRequest {
   private readonly _axios: AxiosInstance
-  private readonly _requestCacheMap = new Map<string, ResponseCacheHolder<any>>()
+  private readonly _requestCacheMap = new Map<string, ResponseCache<any>>()
   private readonly _requestCacheDisk: LocalForage
 
   // 创建 Axios 实例
@@ -36,6 +36,18 @@ export class Request {
       name: 'ezview-request-cache',
       storeName: `request-cache-${name}`,
     })
+  }
+
+  get axios(): AxiosInstance {
+    return this._axios
+  }
+
+  get requestCacheMap(): Map<string, ResponseCache<any>> {
+    return this._requestCacheMap
+  }
+
+  get requestCacheDisk(): LocalForage {
+    return this._requestCacheDisk
   }
 
   // 从缓存获取请求
@@ -53,7 +65,7 @@ export class Request {
       return memoryCache.response as EzResponse<T>
     }
     // 尝试获取二级缓存
-    const diskCache = await this._requestCacheDisk.getItem<ResponseCacheHolder<any>>(key)
+    const diskCache = await this._requestCacheDisk.getItem<ResponseCache<any>>(key)
     if (diskCache && Date.now() <= diskCache.expire) {
       return diskCache.response as EzResponse<T>
     }
@@ -61,26 +73,10 @@ export class Request {
   }
 
   // 发送请求
-  private doRequest<T, D>(config: EzRequestConfig<D, T>): ResponseCacheHolder<T> {
-    let expire: number
-    let attempt: number
-    const resultRef = ref(config.pendingResult) as Ref<T | undefined>
-    const resultPromise = new Promise<T>(async (resolve, reject) => {
-      // 处理完全不走缓存的情况
-      if (config.cache.ignore) {
-        try {
-          const res = await this._axios.request<T>(config)
-          resultRef.value = res.data
-          resolve(res.data)
-        } catch (e) {
-        }
-      }
-    })
-    return {
-      response: { resultRef, resultPromise, loading: ref(false) },
-      expire,
-      attempt
-    }
+  private doRequest<T, D>(config: EzRequestConfig<D, T>) {
+    const requestState = new RequestState<D, T>(this, config)
+    requestState.dispatch(RequestEvent.START).catch(console.error)
+    return requestState.response
   }
 
   // 发送 GET 请求
