@@ -2,7 +2,7 @@ import type { AxiosRequestConfig } from 'axios'
 import type { Ref } from 'vue'
 import type { EzRequest } from './request'
 
-export type Method = 'GET' | 'POST' | 'PUT' | 'DELETE'
+export type Method = 'get' | 'post' | 'put' | 'delete'
 export interface ResultData { code: number, msg: string, data: any }
 
 // 请求配置
@@ -14,7 +14,7 @@ export interface EzRequestConfig<D, T> extends AxiosRequestConfig<D> {
   // 失败重试次数（默认0不重试，-1无限重试）
   retry: number
   // 重试等待时间，传入 attempt（第几次重试）返回等待ms，默认返回3秒
-  retryDelay: (attempt: number) => number
+  retryDelay: number | ((attempt: number) => number)
   // 请求断言，在 axios 拿到的服务器响应为 200 时，可以进一步断言响应对象，以此认定这个请求是否真的成功了，默认是有结果都认为成功
   assert: (resultData: T) => boolean
   // 缓存配置
@@ -41,9 +41,15 @@ export interface EzResponse<T> {
   loadingRef: Ref<boolean>
 }
 
-// 请求缓存
-export interface ResponseCache<T> {
+// 请求缓存（内存）
+export interface ResponseCacheMemory<T> {
   response: EzResponse<T>
+  expire: number
+}
+
+// 请求缓存（磁盘）
+export interface ResponseCacheDisk<T> {
+  response: T
   expire: number
 }
 
