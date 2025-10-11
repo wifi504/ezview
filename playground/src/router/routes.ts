@@ -47,4 +47,8 @@ export default [
       title: '系统登录页',
     },
   },
+  {
+    path: '/request',
+    component: () => import('@/views/request/Index.vue'),
+  },
 ] as RouteRecordRaw[]

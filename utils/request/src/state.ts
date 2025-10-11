@@ -89,7 +89,7 @@ const fetchAction: Action = async (ctx, dispatch) => {
     try {
       const res = await ctx.request.axios.request(ctx.requestConfig)
       // 判断响应结果是否符合预期
-      if (!ctx.requestConfig.assert(res.data)) throw new Error()
+      if (!ctx.requestConfig.assert(res.data)) throw new Error('assert failed!')
       // 成功获取到了响应结果
       ctx.response.resultRef.value = res.data
       // 处理缓存逻辑
@@ -179,6 +179,7 @@ const transitions: Partial<Record<State, Partial<Record<RequestEvent, Transition
           delay = ctx.requestConfig.retryDelay
         }
         await new Promise(resolve => setTimeout(resolve, delay))
+        applyErrorResult(ctx, dispatch)
         await fetchAction(ctx, dispatch)
       },
     },

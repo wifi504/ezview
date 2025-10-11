@@ -47,6 +47,9 @@ importers:
 
   playground:
     dependencies:
+      '@ezview/request':
+        specifier: workspace:*
+        version: link:../utils/request
       '@ezview/threadpool':
         specifier: workspace:*
         version: link:../utils/threadpool
