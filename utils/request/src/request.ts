@@ -67,4 +67,10 @@ export class EzRequest {
     } as any)
     return this.doRequest<T, D>(merged)
   }
+
+  // 清空所有缓存
+  async clearCache() {
+    this._requestCacheMap.clear()
+    await this._requestCacheDisk.clear()
+  }
 }

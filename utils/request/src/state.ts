@@ -57,14 +57,18 @@ const retrievingCacheAction: Action = async (ctx, dispatch) => {
   }
   // 尝试获取一级缓存
   const memoryCache: ResponseCacheMemory<any> | undefined = ctx.request.requestCacheMap.get(key)
-  if (memoryCache && (memoryCache.expire === -1 || Date.now() <= memoryCache.expire)) {
-    const scope = effectScope()
-    scope.run(() => {
-      watch(memoryCache.response.resultRef, v => ctx.response.resultRef.value = v, { immediate: true })
-    })
-    memoryCache.response.resultPromise.finally(() => scope.stop())
-    dispatch(RequestEvent.RESOLVE)
-    return
+  if (memoryCache?.response === ctx.response) {
+    // 就是自身，等价于没有获取到一级缓存，需要跳过一级缓存的逻辑
+  } else {
+    if (memoryCache && (memoryCache.expire === -1 || Date.now() <= memoryCache.expire)) {
+      const scope = effectScope()
+      scope.run(() => {
+        watch(memoryCache.response.resultRef, v => ctx.response.resultRef.value = v, { immediate: true })
+      })
+      memoryCache.response.resultPromise.finally(() => scope.stop())
+      dispatch(RequestEvent.RESOLVE)
+      return
+    }
   }
   // 尝试获取二级缓存
   const diskCache: ResponseCacheDisk<any> | null = await ctx.request.requestCacheDisk.getItem<ResponseCacheDisk<any>>(key)
@@ -86,6 +90,17 @@ const retrievingCacheAction: Action = async (ctx, dispatch) => {
 const fetchAction: Action = async (ctx, dispatch) => {
   // 在请求次数小于最大限制或者无限重试时，进入请求状态
   if (ctx.requestConfig.retry === -1 || ctx.attempt <= ctx.requestConfig.retry + 1) {
+    // 发送请求前的延迟等待
+    if (ctx.attempt !== 1) {
+      let delay: number = 0
+      if (typeof ctx.requestConfig.retryDelay === 'function') {
+        delay = ctx.requestConfig.retryDelay(ctx.attempt - 1)
+      }
+      if (typeof ctx.requestConfig.retryDelay === 'number') {
+        delay = ctx.requestConfig.retryDelay
+      }
+      await new Promise(resolve => setTimeout(resolve, delay))
+    }
     try {
       const res = await ctx.request.axios.request(ctx.requestConfig)
       // 判断响应结果是否符合预期
@@ -111,7 +126,10 @@ const fetchAction: Action = async (ctx, dispatch) => {
       await dispatch(RequestEvent.RETRY)
     }
   } else {
-    // 否则认定请求失败
+    // 否则认定请求失败，并且把相关缓存立即删除
+    const key = getRequestKey(ctx.requestConfig) || ''
+    ctx.request.requestCacheMap.delete(key)
+    await ctx.request.requestCacheDisk.removeItem(key)
     await dispatch(RequestEvent.REJECT)
   }
 }
@@ -163,7 +181,10 @@ const transitions: Partial<Record<State, Partial<Record<RequestEvent, Transition
       next: State.FAILED,
       action: (ctx, dispatch) => {
         applyErrorResult(ctx, dispatch)
-        ctx.resultPromiseAction.reject()
+        ctx.resultPromiseAction.reject({
+          comment: '请求失败，详情请见请求上下文',
+          context: ctx,
+        })
         ctx.response.loadingRef.value = false
       },
     },
@@ -171,14 +192,6 @@ const transitions: Partial<Record<State, Partial<Record<RequestEvent, Transition
       next: State.FETCHING,
       action: async (ctx, dispatch) => {
         ctx.attempt++
-        let delay: number = 0
-        if (typeof ctx.requestConfig.retryDelay === 'function') {
-          delay = ctx.requestConfig.retryDelay(ctx.attempt - 1)
-        }
-        if (typeof ctx.requestConfig.retryDelay === 'number') {
-          delay = ctx.requestConfig.retryDelay
-        }
-        await new Promise(resolve => setTimeout(resolve, delay))
         applyErrorResult(ctx, dispatch)
         await fetchAction(ctx, dispatch)
       },
@@ -218,7 +231,21 @@ export class RequestState<D, T> {
 
     // 缓存请求（无论如何都是先放内存里，磁盘保存要等网络请求之后再说）
     const key = getRequestKey(config)
-    if (config.cache.expire !== 0 && key) {
+    // 如果这次请求要求忽略已有缓存，则删除原有的所有缓存
+    if (config.cache.ignore) {
+      request.requestCacheMap.delete(key || '')
+      request.requestCacheDisk.removeItem(key || '').then()
+    }
+    if (
+      config.cache.expire !== 0 // 需要缓存
+      && key // 并且有缓存键
+      && !( // 并且当前不存在有效缓存
+        request.requestCacheMap.get(key)
+        && (
+          request.requestCacheMap.get(key)!.expire === -1
+          || request.requestCacheMap.get(key)!.expire >= Date.now()
+        )
+      )) {
       if (config.cache.expire === -1) {
         request.requestCacheMap.set(key, {
           response: this._ctx.response,
