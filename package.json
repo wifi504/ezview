@@ -17,6 +17,7 @@
   "devDependencies": {
     "@ezview/eslint-config": "workspace:*",
     "@ezview/gen-vue-routes": "workspace:*",
+    "@ezview/vue-component-resolvers": "workspace:*",
     "@types/node": "^24.0.14",
     "@vitejs/plugin-vue": "^6.0.1",
     "@vue/tsconfig": "^0.8.1",

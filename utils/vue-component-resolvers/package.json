@@ -1,0 +1,23 @@
+{
+  "name": "@ezview/vue-component-resolvers",
+  "version": "1.0.2",
+  "publishConfig": {
+    "access": "public"
+  },
+  "type": "module",
+  "description": "额外拓展 unplugin-vue-components 的 Resolver",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc && tsc-esm-fix dist",
+    "watch": "tsc --watch",
+    "publish:only": "pnpm publish --access public --no-git-checks --registry=https://registry.npmjs.org"
+  },
+  "peerDependencies": {
+    "unplugin-vue-components": "^28.0.0"
+  },
+  "devDependencies": {
+    "tsc-esm-fix": "^3.1.2"
+  }
+}
