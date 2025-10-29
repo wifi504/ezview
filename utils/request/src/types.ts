@@ -32,6 +32,10 @@ export interface EzRequestConfig<D, T> extends AxiosRequestConfig<D> {
   pendingResult?: T
   // 在响应失败时呈现的内容，默认 undefined，可以传函数，通过attempt生成呈现内容，为0表示不会再重试了，彻底失败
   errorResult?: T | ((attempt: number) => T)
+  // 结果响应式对象
+  resultRef?: Ref<T>
+  // 加载状态响应式对象
+  loadingRef?: Ref<boolean>
 }
 
 // 响应

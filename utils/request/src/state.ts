@@ -218,9 +218,9 @@ export class RequestState<D, T> {
       request,
       requestConfig: config,
       response: {
-        resultRef: ref(config.pendingResult) as Ref<T | undefined>,
+        resultRef: config.resultRef ?? ref(config.pendingResult) as Ref<T | undefined>,
         resultPromise: promise,
-        loadingRef: ref<boolean>(true),
+        loadingRef: config.loadingRef ?? ref<boolean>(true),
       },
       resultPromiseAction: {
         resolve,
