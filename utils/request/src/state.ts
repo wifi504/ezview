@@ -218,7 +218,7 @@ export class RequestState<D, T> {
       request,
       requestConfig: config,
       response: {
-        resultRef: config.resultRef ?? ref(config.pendingResult) as Ref<T | undefined>,
+        resultRef: config.resultRef ?? ref() as Ref<T | undefined>,
         resultPromise: promise,
         loadingRef: config.loadingRef ?? ref<boolean>(true),
       },
@@ -228,6 +228,10 @@ export class RequestState<D, T> {
       },
       attempt: 1,
     }
+
+    // 应用默认状态
+    this._ctx.response.resultRef.value = config.pendingResult
+    this._ctx.response.loadingRef.value = true
 
     // 缓存请求（无论如何都是先放内存里，磁盘保存要等网络请求之后再说）
     const key = getRequestKey(config)
